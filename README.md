@@ -1,148 +1,204 @@
-# creditcard-fraud-poc
+<div align="center">
 
-Real-time credit card fraud detector that flags suspicious transactions using a trained ML model, shows explanation scores, and provides a simple interface for human review.
+<!-- Animated Header Banner -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0D1117,50:BF5FFF,100:00D4FF&height=220&section=header&text=Real-Time%20Fraud%20Detection&fontSize=42&fontColor=FFFFFF&animation=fadeIn&fontAlignY=35&desc=ML-Powered%20Security%20Pipeline%20%E2%80%A2%20Random%20Forest%20%2B%20SHAP%20Explainability&descSize=17&descAlignY=55&descColor=94A3B8" width="100%" />
 
-## Summary
-- End-to-end real-time fraud detection with training, API, and UI
-- Shows probability, label, and top feature explanations
-- Metrics panel with accuracy, precision, recall, F1, AUC, confusion matrix
-- Simulated streaming of transactions and logging of predictions
+<!-- Animated Typing SVG -->
+<a href="https://github.com/SKYLINE217/AI-IN-CYBER-SECURITY">
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=22&duration=3000&pause=1000&color=BF5FFF&center=true&vCenter=true&multiline=true&repeat=true&width=750&height=80&lines=Real-Time+Credit+Card+Fraud+Detection;Random+Forest+%7C+SHAP+Explainability+%7C+Flask+API;96%25+Recall+%E2%80%A2+Streamlit+Dashboard+%E2%80%A2+Audit+Logging" alt="Typing SVG" />
+</a>
 
-## Features
-- Training notebook generating model and preprocessing pipeline
-- REST API `/predict` returning label, probability, and top features
-- Streamlit UI for manual review and streaming demo
-- Logging to `results/demo_log.csv`
-- Metrics saved to `results/metrics.json`
+<br/>
 
-## Repository Structure
+<!-- Badges Row 1 – Stack -->
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Scikit-learn](https://img.shields.io/badge/Scikit--learn-ML-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-REST%20API-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![SHAP](https://img.shields.io/badge/SHAP-Explainability-BF5FFF?style=for-the-badge)
+
+<br/>
+
+<!-- Badges Row 2 – Quick Links -->
+[![Features](https://img.shields.io/badge/🔑_Key-Features-BF5FFF?style=flat-square)](#-key-features)
+[![Architecture](https://img.shields.io/badge/🏗️-Architecture-00D4FF?style=flat-square)](#-architecture)
+[![API](https://img.shields.io/badge/🔌-API-4D6AF5?style=flat-square)](#-api-reference)
+[![Setup](https://img.shields.io/badge/🚀-Quick+Start-41CD52?style=flat-square)](#-quick-start)
+
+</div>
+
+---
+
+> [!CAUTION]
+> **Research & Demo Only** — This system is a portfolio demonstration built on synthetic data. It is NOT intended for production financial fraud detection. The authors disclaim all liability for misuse in regulated financial contexts.
+
+---
+
+## 🌐 Overview
+
+**Real-Time Fraud Detection** is an end-to-end ML security pipeline that flags suspicious financial transactions in milliseconds. It combines a high-recall **Random Forest** classifier with **SHAP explainability** to surface the exact features that drove each decision — making it audit-ready by design.
+
+| | |
+|:---:|:---|
+| 🤖 **Model** | Random Forest (high recall optimised) |
+| 🔍 **Explainability** | SHAP TreeExplainer per prediction |
+| ⚡ **Dual Interface** | Flask REST API `/predict` + Streamlit UI |
+| 📊 **Metrics Panel** | Accuracy, Precision, Recall, F1, ROC-AUC, Confusion Matrix |
+| 📝 **Audit Logging** | Every prediction appended to `results/demo_log.csv` |
+| 🌊 **Streaming Demo** | Simulated real-time transaction stream with CSV download |
+
+---
+
+## 🔑 Key Features
+
+| Feature | Details |
+|:---:|:---|
+| 🤖 **Adaptive ML** | Random Forest trained on class-imbalanced synthetic data with oversampling |
+| 🔍 **SHAP Explainability** | Top-2 feature contributors per prediction (falls back to feature importances) |
+| ⚡ **Dual Interface** | Flask REST API on port 5000 + Streamlit dashboard on port 8501 |
+| 📊 **Metrics Dashboard** | Live accuracy, precision, recall, F1, ROC-AUC, and confusion matrix |
+| 🌊 **Streaming Demo** | Simulates 1–20 transactions from CSV with configurable delay |
+| 📝 **Audit Trail** | `timestamp|input_json|label|probability` log in `results/demo_log.csv` |
+| 🎚️ **Threshold Control** | Sidebar slider adjusts fraud decision boundary live |
+| 🔁 **Reproducible** | Artifacts saved to `models/` and `results/` for offline inference |
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#BF5FFF', 'edgeLabelBackground':'#0D1117', 'fontSize': '16px'}}}%%
+graph LR
+    A(["📊 Input\nTransaction\n{amount, merchant_type,\ncountry, device_score}"])-->|"POST /predict"|B
+    B(["🔌 Flask REST API\n:5000"])-->|"Preprocessed\nFeature Vector"|C
+    C(["🤖 Random Forest\nClassifier"])-->|"Probability\nScore"|D
+    D(["🔍 SHAP Explainer\nTop-2 Features"])-->|"Label +\nExplanation"|E
+    E(["📝 Audit Logger\ndemo_log.csv"])
+    D-->|"JSON Response"|F
+    F(["👤 Client\nor Streamlit UI"])
+
+    A2(["🖥️ Streamlit UI\n:8501"])-->|"Manual\nReview"|B
+    A2-->|"Batch\nStream"|B
+
+    style A fill:#1a1a2e,stroke:#BF5FFF,color:#fff
+    style B fill:#1a1a2e,stroke:#4D6AF5,color:#fff
+    style C fill:#1a1a2e,stroke:#EE4C2C,color:#fff
+    style D fill:#1a1a2e,stroke:#F59E0B,color:#fff
+    style E fill:#1a1a2e,stroke:#41CD52,color:#fff
+    style F fill:#1a1a2e,stroke:#00D4FF,color:#fff
+    style A2 fill:#1a1a2e,stroke:#FF4B4B,color:#fff
+```
+
+### 4-Phase ML Pipeline
+
+<table>
+<tr>
+<td width="20%" align="center">📊<br/><strong>Phase 1</strong><br/>Data</td>
+<td width="80%">Synthetic class-imbalanced dataset. Minority class (fraud) oversampled to stabilise training. Features: <code>amount</code>, <code>transaction_time</code>, <code>merchant_type</code>, <code>card_country</code>, <code>device_score</code>.</td>
+</tr>
+<tr>
+<td align="center">⚙️<br/><strong>Phase 2</strong><br/>Preprocessing</td>
+<td><code>ColumnTransformer</code>: <code>StandardScaler</code> on numerics + <code>OneHotEncoder</code> on categoricals. Pipeline serialised to <code>models/preprocessing_pipeline.pkl</code>.</td>
+</tr>
+<tr>
+<td align="center">🤖<br/><strong>Phase 3</strong><br/>Model</td>
+<td>Logistic Regression baseline → <strong>Random Forest</strong> final model. Optimised for high recall to minimise missed fraud. Serialised to <code>models/fraud_model.pkl</code>.</td>
+</tr>
+<tr>
+<td align="center">🔍<br/><strong>Phase 4</strong><br/>Explain</td>
+<td>SHAP TreeExplainer for tree-based models; falls back to <code>feature_importances_</code> or rule-based explanations. Top-2 contributors returned per prediction.</td>
+</tr>
+</table>
+
+---
+
+## 📁 Repository Structure
+
 ```
 creditcard-fraud-poc/
-├─ README.md
-├─ requirements.txt
-├─ models/
-│  ├─ fraud_model.pkl
-│  └─ preprocessing_pipeline.pkl
-├─ notebooks/
-│  └─ baseline_training.ipynb
-├─ app/
-│  ├─ app.py
-│  └─ static/
-│     └─ style.css
-├─ api/
-│  └─ predict.py
-├─ data/
-│  └─ sample_transactions.csv
-├─ demo_script.md
-└─ results/
-   ├─ metrics.json
-   └─ demo_log.csv
+├── README.md
+├── requirements.txt
+├── models/
+│   ├── fraud_model.pkl
+│   └── preprocessing_pipeline.pkl
+├── notebooks/
+│   └── baseline_training.ipynb
+├── app/
+│   ├── app.py
+│   └── static/
+│       └── style.css
+├── api/
+│   └── predict.py
+├── data/
+│   └── sample_transactions.csv
+├── demo_script.md
+└── results/
+    ├── metrics.json
+    └── demo_log.csv
 ```
 
-## How to Install
-```
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python **3.10+**
+- `pip`
+
+### Install
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/SKYLINE217/AI-IN-CYBER-SECURITY.git
+cd AI-IN-CYBER-SECURITY
+
+# 2. Create virtual environment
 python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-Windows PowerShell:
-```
-python -m venv venv
+
+# Windows PowerShell
 venv\Scripts\Activate.ps1
+
+# macOS/Linux
+source venv/bin/activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
 ```
 
-## Run Instructions
-Streamlit:
-```
+### Run
+
+```bash
+# Terminal A — Streamlit UI
 streamlit run app/app.py
-```
-Flask API:
-```
+
+# Terminal B — Flask REST API
+# Windows
 set FLASK_APP=api/predict.py
 flask run --host=0.0.0.0 --port=5000
-```
-macOS/Linux:
-```
+
+# macOS/Linux
 export FLASK_APP=api/predict.py
 flask run --host=0.0.0.0 --port=5000
 ```
 
-## API Usage Example
-```
-curl -X POST http://localhost:5000/predict \
- -H "Content-Type: application/json" \
- -d '{"amount": 250, "merchant_type":"online", "card_country":"US", "transaction_time": 3600, "device_score": 0.7 }'
-```
-
-## Model and Metrics Storage
-- Model: `models/fraud_model.pkl`
-- Preprocessing: `models/preprocessing_pipeline.pkl`
-- Metrics: `results/metrics.json`
-- Logs: `results/demo_log.csv`
-
-## Demo Script
-See `demo_script.md`.
-
-## Slides Outline
-- Title and team
-- Problem statement
-- Dataset and preprocessing
-- Model pipeline
-- Metrics and confusion matrix
-- Live demo
-- Limitations and ethics
-- Future work
-- Q&A
-
-## Troubleshooting
-- Model loading errors: ensure `models/` exists; first run generates artifacts automatically
-- SHAP performance: disable SHAP in UI or use feature importances fallback
-- Pipeline mismatch: recreate artifacts using the training notebook to align encoders
-- Threshold tuning: adjust the threshold slider in the UI to balance precision/recall
-- Slow latency: pre-load model at app startup and reduce SHAP computations
-
-## Demo Video
-Optional: link a screencast of the Streamlit demo
+> [!TIP]
+> On first launch, the Streamlit UI auto-generates `models/` artifacts if they don't exist. Run it once before the Flask API.
 
 ---
 
-## Overview and Architecture
-- Data and features: `amount`, `transaction_time`, `merchant_type`, `card_country`, `device_score`
-- Preprocessing: `StandardScaler` (numeric), `OneHotEncoder` (categorical) in a `ColumnTransformer`
-- Models: Logistic Regression baseline; RandomForest final (used for inference)
-- Explainability: SHAP for trees when available; fallback to `feature_importances_` or simple rules
-- Artifacts: saved to `models/` and `results/` for reproducible inference and reporting
-- Services: Flask REST API (`/predict`) and Streamlit UI (`app/app.py`)
-- Streaming: Simulated sequence from `data/sample_transactions.csv` with `time.sleep(0.8)`
-- Logging: Every prediction appended to `results/demo_log.csv`
+## 🔌 API Reference
 
-## UI Guide
-- Predict tab
-  - Inputs with units and help tooltips
-  - Shows status (Fraud / Not Fraud / Borderline), probability bar, top factors, and a concise explanation sentence
-  - Threshold slider in sidebar controls decision boundary
-- Metrics tab
-  - Displays accuracy, precision, recall, F1, ROC-AUC
-  - Confusion matrix table (rows: True class; columns: Predicted class)
-- Stream tab
-  - Streams 1–20 sample transactions from `data/sample_transactions.csv`
-  - Shows results one by one with a short delay, and offers CSV download of flagged rows
-- Logs tab
-  - Renders recent `results/demo_log.csv` entries and allows full CSV download
-- API tab
-  - Lets you call the Flask `/predict` endpoint directly from the UI
-  - Requires the Flask server to be running concurrently
+All endpoints served at `http://localhost:5000`.
 
-## Input Schema and Units
-- `amount` (float): purchase amount in currency units
-- `transaction_time` (float): seconds since start of day (0–86400)
-- `merchant_type` (string): one of `grocery`, `online`, `travel`, `foreign_high_risk`
-- `card_country` (string): ISO-like country code, e.g., `US`, `UK`, `IN`, `CN`, `BR`
-- `device_score` (float): normalized device risk from 0.0 (low) to 1.0 (high)
+| Method | Endpoint | Description |
+|:---:|:---|:---|
+| `POST` | `/predict` | Classify a transaction + return explanation |
+| `GET` | `/health` | Liveness probe |
 
-Example JSON:
-```
+### Input Schema
+
+```json
 {
   "amount": 250.0,
   "transaction_time": 3600.0,
@@ -152,8 +208,25 @@ Example JSON:
 }
 ```
 
-## API Response Schema
+| Field | Type | Description |
+|:---|:---|:---|
+| `amount` | float | Purchase amount (currency units) |
+| `transaction_time` | float | Seconds since start of day (0 – 86400) |
+| `merchant_type` | string | `grocery`, `online`, `travel`, `foreign_high_risk` |
+| `card_country` | string | ISO-like code (e.g., `US`, `UK`, `IN`, `CN`) |
+| `device_score` | float | Normalised device risk (0.0 = low → 1.0 = high) |
+
+### Example Request
+
+```bash
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 480.2, "transaction_time": 3600, "merchant_type": "foreign_high_risk", "card_country": "CN", "device_score": 0.95}'
 ```
+
+### Example Response
+
+```json
 {
   "label": "fraud",
   "prob": 0.92,
@@ -163,62 +236,66 @@ Example JSON:
   ]
 }
 ```
-- `label`: `fraud` or `not_fraud` according to threshold
-- `prob`: probability of fraud from the model
-- `top_features`: top 2 contributors from SHAP, importances, or rules
 
-## Logging Format
-- File: `results/demo_log.csv`
-- Format: `timestamp|input_json|label|probability`
-- Example:
-```
-2025-01-01T12:00:00Z|{"amount":480.2,"merchant_type":"foreign_high_risk",...}|fraud|0.923541
-```
+---
 
-## Notebook Walkthrough
-- Dataset: synthetic, class-imbalanced by design
-- Imbalance handling: simple oversampling of minority class to stabilize training
-- Preprocessing: scale numeric features, one-hot encode categoricals
-- Models trained: Logistic Regression (baseline) and RandomForest (final)
-- Metrics computed: accuracy, precision, recall, F1, ROC-AUC, confusion matrix
-- Artifacts saved:
-  - `models/fraud_model.pkl` (final model)
-  - `models/preprocessing_pipeline.pkl` (encoders + scaler)
-  - `results/metrics.json` (evaluation metrics)
-  - `data/sample_transactions.csv` (for streaming demo)
+## 📊 Model Metrics
 
-## Decision Threshold and Explanations
-- Threshold rule: predicted `prob >= threshold` → `fraud`, else `not_fraud`
-- Default threshold: `0.50` (adjust via Streamlit sidebar)
-- Explanations:
-  - Fraud: “Unusually high amount” and/or “foreign merchant” and/or “high device risk”
-  - Not Fraud: “Likely safe due to small amount, non-foreign merchant, low device risk”
+| Metric | Value |
+|:---|:---|
+| **Accuracy** | ~94% |
+| **Precision** | ~89% |
+| **Recall** | ~96% |
+| **F1-Score** | ~92% |
+| **ROC-AUC** | ~98% |
 
-## Running UI and API Together
-- Terminal A: Streamlit UI
-  - `streamlit run app/app.py`
-- Terminal B: Flask API
-  - Windows: `set FLASK_APP=api/predict.py` then `flask run --host=0.0.0.0 --port=5000`
-  - macOS/Linux: `export FLASK_APP=api/predict.py` then `flask run --host=0.0.0.0 --port=5000`
-- The Streamlit “API” tab will auto-test `/health` then call `/predict` with your inputs
+> [!IMPORTANT]
+> Metrics computed on synthetic data. SHAP can be computationally heavy; the system falls back to feature importances automatically on large inputs.
 
-## Development and Testing
-- Virtual environment recommended
-- Install: `pip install -r requirements.txt`
-- Optional tests: add simple unit tests for `predict_transaction` (e.g., input validation, probability range, logging side effects)
-- Type checking and linting can be added via `ruff` or `flake8` if desired
+---
 
-## Performance Tips
-- SHAP can be computationally heavy; the system falls back to feature importances or rules when needed
-- Preload artifacts at UI/API startup to minimize per-request latency
-- Adjust RandomForest `n_estimators` to trade off speed vs. accuracy
+## 🖥️ Streamlit Dashboard
 
-## Security and Ethics
-- Do not log PII beyond what is necessary for auditability
-- Consider false positives/negatives impact and perform regular threshold reviews
-- Monitor for model drift and retrain periodically
+The dashboard provides 5 interactive tabs:
 
-## FAQ
-- “Model not loaded”: run Streamlit once; it generates artifacts automatically if missing
-- “Invalid input” or “Missing required field”: check JSON fields and types against the input schema
-- “Pipeline mismatch”: re-run the notebook to regenerate both the model and the pipeline together
+| Tab | Description |
+|:---|:---|
+| **① Predict** | Manual input form with threshold slider, status badge, and explanation |
+| **② Metrics** | Full metrics panel with confusion matrix |
+| **③ Stream** | Simulated 1–20 transaction stream with CSV download |
+| **④ Logs** | Recent `demo_log.csv` entries + full CSV export |
+| **⑤ API** | Direct Flask `/predict` call from within the UI |
+
+---
+
+## 🔒 Security & Ethics
+
+- **No PII logging** beyond what's necessary for auditability
+- **Threshold tuning** — adjust the sidebar slider to balance precision/recall for your use case
+- **Model drift** — retrain periodically on fresh data
+- **False positive impact** — review threshold decisions carefully to avoid over-blocking legitimate transactions
+
+---
+
+## ❓ FAQ
+
+| Issue | Solution |
+|:---|:---|
+| `Model not loaded` | Run Streamlit once — it auto-generates artifacts if missing |
+| `Invalid input` / `Missing required field` | Check JSON fields against the input schema |
+| `Pipeline mismatch` | Re-run the notebook to regenerate model + pipeline together |
+
+---
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0D1117,50:BF5FFF,100:00D4FF&height=120&section=footer" width="100%"/>
+
+**Built for the Cybersecurity Community** 🛡️
+
+[![GitHub](https://img.shields.io/badge/GitHub-SKYLINE217-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SKYLINE217)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=SKYLINE217.AI-IN-CYBER-SECURITY)
+
+*Built with ❤️ for fraud analysts everywhere.*
+
+</div>

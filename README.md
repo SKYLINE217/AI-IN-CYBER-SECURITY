@@ -299,3 +299,5 @@ The dashboard provides 5 interactive tabs:
 *Built with ❤️ for fraud analysts everywhere.*
 
 </div>
+
+<!-- portfolio upgrade -->
